@@ -1,0 +1,41 @@
+<!doctype html>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<dom-module id="postit-home">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+
+        </style>
+        <div class="card">
+            <h1>Postit App</h1>
+            <dom-if if="[[user.loggedin]]">
+                <template>
+                    <p> <strong>[[user.name]]</strong> gestisci i tuoi messaggi</p>
+                </template>
+            </dom-if>
+            <a href="/messages">Visualizza i tuoi messaggi</a>
+        </div>
+    </template>
+    <script>
+        class PostitHome extends Polymer.Element {
+            constructor() {
+                super();
+                console.log()
+            }
+            static get is() {
+                return 'postit-home';
+            }
+            static get properties() {
+                return {
+                    user: Object,
+                }
+            }
+        }
+        window.customElements.define(PostitHome.is, PostitHome);
+
+    </script>
+</dom-module>

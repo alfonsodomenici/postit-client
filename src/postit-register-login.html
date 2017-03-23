@@ -1,0 +1,130 @@
+<!doctype html>
+<link rel="import" href="../bower_components/polymer/polymer-element.html" />
+<link rel="import" href="../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="shared-styles.html" />
+<dom-module id="postit-register-login">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+
+            .alert-error {
+                background: #ffcdd2;
+                border: 1px solid #f44336;
+                border-radius: 3px;
+                color: #333;
+                font-size: 14px;
+                padding: 10px;
+            }
+
+        </style>
+        <iron-ajax id="login" method="post" url="http://localhost:8080/PostIt/resources/utenti/login"
+            handle-as="json" content-type="application/json" on-response="handleResponse" on-error="handleError">
+        </iron-ajax>
+        <div class="card">
+            <h1 hidden$="{{doRegistration}}">Login</h1>
+            <h1 hidden$="{{!doRegistration}}">Inserisci i tuoi dati</h1>
+            <p> Effettua la <strong>Login</strong> oppure <strong>Registrati</strong> </p>
+            <dom-if if="[[error]]">
+                <template>
+                    <p class="alert-error"><strong>Error:</strong> [[error]]</p>
+                </template>
+            </dom-if>
+            <paper-input label="username" value="{{credential.usr}}"></paper-input>
+            <paper-input label="password" type="password" value="{{credential.pwd}}"></paper-input>
+            <dom-if if="{{doRegistration}}">
+                <template>
+                    <paper-input label="email" value="{{credential.email}}"></paper-input>
+                    <div>
+                        <paper-button raised class="primary" on-tap="postRegistration">Salva</paper-button>
+                        <paper-button raised class="primary" on-tap="disableRegistration">Annulla</paper-button>
+                    </div>
+                </template>
+            </dom-if>
+            <dom-if if="{{!doRegistration}}">
+                <template>
+                    <div>
+                        <paper-button raised class="primary" on-tap="postLogin">Login</paper-button>
+                        <paper-button raised class="primary" on-tap="enableRegistration">Registrati</paper-button>
+                    </div>
+                </template>
+            </dom-if>
+        </div>
+    </template>
+    <script>
+        class PostitRegisterLogin extends Polymer.Element {
+            static get is() {
+                return 'postit-register-login';
+            }
+            constructor() {
+                super();
+                this.credential = {};
+                this.route = {};
+                this.doRegistration = false;
+            }
+            static get properties() {
+                return {
+                    user: Object,
+                };
+            }
+            enableRegistration() {
+                console.log("enableRegistration()")
+                this.doRegistration = true;
+                this.error = "";
+            }
+            disableRegistration() {
+                console.log("disableRegistration()")
+                this.doRegistration = false;
+                this.error = "";
+            }
+            postRegistration() {
+                console.log("postRegistration()");
+                this.$.login.response = this.handleRegistrationResponse;
+                this.$.login.url = "http://localhost:8080/PostIt/resources/utenti";
+                this.$.login.body = this.credential;
+                this.$.login.generateRequest();
+            }
+            postLogin() {
+                //alert(JSON.stringify(this.credential));
+                console.log("postLogin()");
+                this.$.login.response = this.handleLoginResponse;
+                this.$.login.url = "http://localhost:8080/PostIt/resources/utenti/login";
+                this.$.login.body = this.credential;
+                this.$.login.generateRequest();
+            }
+            handleResponse(event) {
+                let response = event.detail.response;
+                console.log("handleResponse Login: " + JSON.stringify(response));
+                if (this.doRegistration) {
+                    this.doRegistration = false;
+                    return;
+                }
+                if (response.id_token) {
+                    this.error = '';
+                    console.log("Fire user-logged-in event....");
+                    this.dispatchEvent(new CustomEvent('user-logged-in', {
+                        bubbles: true,
+                        composed: true,
+                        detail: {
+                            name: this.credential.usr,
+                            token: response.id_token,
+                            loggedin: true
+                        }
+                    }));
+                }
+                this.credential = {};
+            }
+            handleError(event) {
+                console.log(event.detail.request.xhr);
+                this.doRegistration ? this.error = "Registrazione fallita..." : this.error =
+                    "Login fallita..";
+            }
+        }
+        window.customElements.define(PostitRegisterLogin.is, PostitRegisterLogin);
+
+    </script>
+</dom-module>

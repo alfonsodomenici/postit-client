@@ -1,0 +1,21 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/postit-app.html",
+  "fragments": [
+    "src/postit-home.html",
+    "src/postit-register-login.html",
+    "src/postit-view404.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "bower.json"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  }
+}
