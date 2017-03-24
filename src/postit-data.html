@@ -65,8 +65,9 @@
             _fetchMessages() {
                 if (this.user.token) {
                     console.log("_fetchMessages()...");
-                    this.$.url = "http://localhost:8080/PostIt/resources/messaggi/user/" +
-                        this.user.token;
+                    this.$.rMessages.url =
+                        "http://localhost:8080/PostIt/resources/messaggi/utente/" + this.user
+                        .token;
                     this.$.rMessages.headers = {
                         id_token: this.user.token
                     };
