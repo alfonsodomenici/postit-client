@@ -1,0 +1,57 @@
+<!doctype html>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="postit-data.html">
+<link rel="import" href="postit-list-item.html">
+<dom-module id="postit-list">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+
+        </style>
+        <postit-data user="[[user]]" messages="{{messages}}"></postit-data>
+        <dom-repeat items="[[messages]]" as="msg">
+            <template>
+                <a href$="[[_getItemHref(msg)]]">
+                    <postit-list-item item="[[msg]]"> </postit-list-item>
+                </a>
+            </template>
+        </dom-repeat>
+    </template>
+    <script>
+        class PostitList extends Polymer.Element {
+            constructor() {
+                super();
+                console.log("PostitList()...")
+            }
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            ready() {
+                super.ready();
+                console.log("PostitList().ready()...")
+            }
+            static get is() {
+                return 'postit-list';
+            }
+            static get properties() {
+                return {
+                    /* properties meta data object just like 1.x */
+                    user: {
+                        type: Object,
+                    },
+                }
+            }
+            _getItemHref(item) {
+                // By returning null when `itemId` is undefined, the href attribute won't be set and
+                // the link will be disabled.
+                return item.id ? ['/detail', item.id].join('/') : null;
+            }
+        }
+        window.customElements.define(PostitList.is, PostitList);
+
+    </script>
+</dom-module>

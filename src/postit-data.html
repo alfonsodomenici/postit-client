@@ -1,0 +1,93 @@
+<!doctype html>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="shared-styles.html">
+<dom-module id="postit-data">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+
+        </style>
+        <iron-ajax id="rMessages" method="GET" handle-as="json" on-response="_handleFetchMessages"
+            on-error="_handleError"></iron-ajax>
+    </template>
+    <script>
+        class PostitData extends Polymer.Element {
+            constructor() {
+                super();
+                console.log("PostitData()...")
+            }
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            ready() {
+                super.ready();
+                console.log("PostitData().ready()...")
+            }
+            static get is() {
+                return 'postit-data';
+            }
+            static get properties() {
+                return {
+                    user: {
+                        type: Object
+                    },
+                    messages: {
+                        type: Array,
+                        value: function() {
+                            return [];
+                        },
+                        notify: true
+                    },
+                    message: {
+                        type: Object,
+                        notify: true
+                    },
+                    message_id: {
+                        type: Number,
+                        notify: true
+                    }
+                }
+            }
+            static get observers() {
+                return ['_userChanged(user.loggedin)']
+            }
+            refresh() {
+                this._fetchMessages();
+            }
+            _handleFetchMessages(e) {
+                console.log("_handleFetchMessages()...")
+                this.set("messages", e.detail.response);
+            }
+            _fetchMessages() {
+                if (this.user.token) {
+                    console.log("_fetchMessages()...");
+                    this.$.url = "http://localhost:8080/PostIt/resources/messaggi/user/" +
+                        this.user.token;
+                    this.$.rMessages.headers = {
+                        id_token: this.user.token
+                    };
+                    this.$.rMessages.generateRequest();
+                } else {
+                    console.log("_fetchMessages()...user not logged");
+                }
+            }
+            _handleError(e) {
+                console.log("Error..." + e.detail.error);
+            }
+            _userChanged(loggedin) {
+                console.log("_userChanged..");
+                if (loggedin) {
+                    this._fetchMessages();
+                } else {
+                    this.messaggi = null;
+                }
+            }
+        }
+        window.customElements.define(PostitData.is, PostitData);
+
+    </script>
+</dom-module>

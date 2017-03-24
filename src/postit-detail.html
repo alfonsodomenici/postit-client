@@ -1,0 +1,45 @@
+<!doctype html>
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<dom-module id="postit-detail">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+
+        </style>
+        <app-route route="[[route]]" pattern="/:id" data="{{routeData}}"></app-route>
+        <p> [[routeData.id]] </p>
+        <p> token [[user.token]] </p>
+    </template>
+    <script>
+        class PostitDetail extends Polymer.Element {
+            constructor() {
+                super();
+                console.log("PostitDetail()...")
+            }
+            connectedCallback() {
+                super.connectedCallback();
+            }
+            ready() {
+                super.ready();
+                console.log("PostitDetail().ready()...")
+            }
+            static get is() {
+                return 'postit-detail';
+            }
+            static get properties() {
+                return {
+                    user: {
+                        type: Object,
+                    }
+                }
+            }
+        }
+        window.customElements.define(PostitDetail.is, PostitDetail);
+
+    </script>
+</dom-module>

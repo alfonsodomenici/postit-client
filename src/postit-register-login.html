@@ -62,9 +62,14 @@
             }
             constructor() {
                 super();
+                console.log("PostitRegisterLogin()...")
                 this.credential = {};
                 this.route = {};
                 this.doRegistration = false;
+            }
+            ready() {
+                super.ready();
+                console.log("PostitRegisterLogin().ready()...")
             }
             static get properties() {
                 return {

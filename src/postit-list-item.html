@@ -1,7 +1,7 @@
 <!doctype html>
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
-<dom-module id="postit-home">
+<dom-module id="postit-list-item">
     <template>
         <style include="shared-styles">
              :host {
@@ -11,33 +11,35 @@
 
         </style>
         <div class="card">
-            <h1>Postit App</h1>
-            <dom-if if="[[user.loggedin]]">
-                <template> </template>
-            </dom-if>
-            <a href="/list">Visualizza i tuoi messaggi</a>
+            <p> [[item.titolo]] </p>
+            <p> [[item.contenuto]] </p>
+            <p> [[item.dataCreazione]] </p>
         </div>
     </template>
     <script>
-        class PostitHome extends Polymer.Element {
+        class PostitListItem extends Polymer.Element {
             constructor() {
                 super();
-                console.log("PostitHome()...")
+            }
+            connectedCallback() {
+                super.connectedCallback();
             }
             ready() {
                 super.ready();
-                console.log("PostitHome().ready()...")
             }
             static get is() {
-                return 'postit-home';
+                return 'postit-list-item';
             }
             static get properties() {
                 return {
-                    user: Object,
+                    /* properties meta data object just like 1.x */
+                    item: {
+                        type: Object,
+                    }
                 }
             }
         }
-        window.customElements.define(PostitHome.is, PostitHome);
+        window.customElements.define(PostitListItem.is, PostitListItem);
 
     </script>
 </dom-module>

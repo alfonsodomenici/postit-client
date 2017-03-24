@@ -4,6 +4,8 @@
   "fragments": [
     "src/postit-home.html",
     "src/postit-register-login.html",
+    "src/postit-list.html",
+    "src/postit-detail.html",
     "src/postit-view404.html"
   ],
   "sources": [
